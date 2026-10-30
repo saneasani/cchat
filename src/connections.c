@@ -199,19 +199,13 @@ int write_msg(event_info *cur_event_info, void *ptr_data, size_t in_len, int msg
 	
 
 	
-	/*
-	printf("~~~~~~~~~~~~~~~~~~1~~~~~~~~~~~~~~~~~~~~\n");
-	printf("~~~fd %d\n", cur_event_info->fd);
-	*/
 	
 	
 	if (cur_event_info->total_len == cur_event_info->cur_len){	
-		//printf("[!] clear_output_msg(cur_event_info); \n");
 		clear_output_msg(cur_event_info);
 	}
 	
 	if (0 != cur_event_info->fl_file_name && cur_event_info->left_file_size > 0 && -1 != cur_event_info->event_file_fd){
-		//printf("[!] cur_event_info->left_file_size\n");
 		write_to_event_fd(cur_event_info->event_file_fd);		
 	}
 	 
@@ -222,7 +216,6 @@ int write_msg(event_info *cur_event_info, void *ptr_data, size_t in_len, int msg
 		exit(1);
 	
 	} 
-	//printf("~~~~~~~~~~~~~~~~~~2~~~~~~~~~~~~~~~~~~~~~~\n");
 	
 	return 1;
 }
@@ -394,10 +387,7 @@ int write_msg_client(int conn_fd, int *lock_fd, event_info *cur_event_info, void
 						cur_event_info->n_written = 0;
 						
 						break;						
-						
-						//printf("EAGAIN\n");
-						//exit(1);
-				
+										
 					}		
 					else if (EPIPE == errno){
 						clear_output_msg(cur_event_info);
@@ -425,24 +415,15 @@ int write_msg_client(int conn_fd, int *lock_fd, event_info *cur_event_info, void
 		}
 		
 
-		
-		/*
-		printf("~~~~~~~~~~~~~~~~~~1~~~~~~~~~~~~~~~~~~~~\n");
-		printf("~~~fd %d\n", cur_event_info->fd);
-		printf("cur_event_info->total_len %ld\n", cur_event_info->total_len);
-		printf("cur_event_info->cur_len %ld\n", cur_event_info->cur_len);
-		*/
-		
+
 		
 		if (cur_event_info->total_len == cur_event_info->cur_len){	
-			//printf("[!] clear_output_msg(cur_event_info); \n");
 			clear_output_msg(cur_event_info);
 			*lock_fd = -1;
 		}
 
 		
 		if (0 != cur_event_info->fl_file_name && cur_event_info->left_file_size > 0 && -1 != cur_event_info->event_file_fd){
-			//printf("[!] cur_event_info->left_file_size\n");
 			write_to_event_fd(cur_event_info->event_file_fd);		
 		}
 		 
