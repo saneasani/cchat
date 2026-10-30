@@ -173,28 +173,8 @@ int write_msg(event_info *cur_event_info, void *ptr_data, size_t in_len, int msg
 					continue;		
 				}
 				else if (EAGAIN == errno || EWOULDBLOCK == errno){
-					cur_event_info->n_written = 0;
+					cur_event_info->n_written = 0;	
 
-					/*
-	
-					printf("--------------------AFTER- ,MSG----------------\n");
-
-					fprintf(stderr, "msg_std.msg_type=> %" PRIu8 "\n", cur_event_info->msg_std.msg_type);
-					fprintf(stderr, "msg_std.notif=> %" PRIu8 "\n", cur_event_info->msg_std.notif);
-					fprintf(stderr, "msg_std.len=> %" PRId16 "\n", cur_event_info->msg_std.len);
-					
-					
-					fprintf(stderr, "msg_std.msg_type=> %zd\n", cur_event_info->total_len);
-					fprintf(stderr, "msg_std.cur_len=> %zd\n", cur_event_info->cur_len);
-					fprintf(stderr, "msg_std.n_left=> %zd\n", cur_event_info->n_left);
-					fprintf(stderr, "msg_std.n_written=> %zd\n", cur_event_info->n_written);
-					fprintf(stderr, "msg_std.status_msg=> %zd\n", cur_event_info->status_msg);
-									
-					*/
-						
-				
-
-	
 					break;		
 				}		
 				else if (EPIPE == errno){
