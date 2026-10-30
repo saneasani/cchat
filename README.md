@@ -62,4 +62,5 @@ Request shell access from another user and accept the request.
 
 
 **Testing:**   
-- Tested on an AWS EC2 instance.  
+- Tested on an AWS EC2 Ubuntu instance.
+- Ubuntu desktop.
