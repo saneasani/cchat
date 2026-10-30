@@ -50,7 +50,6 @@
 
 
 void write_to_event_fd(int fd){
-	//printf("WRITING!!!!!!\n");
 	if (fd < 0){
 		fprintf(stderr, "[system]: write_to_event_fd, fd < 0.\n");
 		exit(1);
