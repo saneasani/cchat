@@ -55,11 +55,8 @@ int check_if_fd_is_timer(timers_db *timer_db,  hash_map *map, event_info *cur_ev
 				if ((t_src_fd = timer_db->db_fd_src[cur_event_info->fd]) != -1){
 					if ((t_dst_fd = timer_db->db_fd_dst[cur_event_info->fd]) != -1){
 					 
-						fprintf(stderr, "~~~~~~~~~1~~~~~~~~~~~\n");
 						event_info *cur_event_info_tmp = get_el_value_hash_map_by_idx_fd(map, t_idx, t_src_fd);
-						fprintf(stderr, "~~~~~~~~~2~~~~~~~~~~~\n");
-						
-						
+											
 						if (NULL != cur_event_info_tmp){							
 							if ('p' == t_type){
 								if ((t_dst_fd == cur_event_info_tmp->timer_rq_db_p[0]) && (0 == cur_event_info_tmp->timer_rq_db_p[1])){				
