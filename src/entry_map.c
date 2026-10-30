@@ -3,10 +3,7 @@
 
 
 
-#define HASHSIZE 101
-
-
-ssize_t hashcode(unsigned char *s){
+ssize_t hashcode(char *s){
 	if (NULL == s){
 		fprintf(stderr, "[server]: hashcode: s is NULL.\n");
 		exit(1);
@@ -14,7 +11,7 @@ ssize_t hashcode(unsigned char *s){
 	
     ssize_t hash_val = 0;
     for(;*s;)
-		hash_val = *s++ ^ hash_val + 31;
+		hash_val = *s++ ^ (hash_val + 31);
     
     return hash_val % HASHSIZE;
 }
@@ -27,7 +24,7 @@ hash_map* create_hash_map(size_t limit, float loadFactor, float multiplier) {
 		
 		tmp->arr_size = (limit >= INITIAL_SIZE) ? limit : INITIAL_SIZE;
 		tmp->data = (Entry**) calloc(tmp->arr_size, sizeof(Entry*));
-		for (int i = 0; i < tmp->arr_size; tmp->data[i++] = NULL);
+		for (size_t i = 0; i < tmp->arr_size; tmp->data[i++] = NULL);
 		
 		tmp->size = 0;
 		tmp->loadFactor = (loadFactor >= LOAD_FACTOR && loadFactor <= 1.0f) ? loadFactor : LOAD_FACTOR;
@@ -233,10 +230,6 @@ event_info *get_el_value_hash_map_by_key(hash_map *map, char *key) {
 	}
 	
 	size_t index = (hash % map->arr_size);
-	if (-1 == index){
-		fprintf(stderr, "[system]: raw_put, hash is -1.\n");
-		exit(1);
-	}
 	
 	
 	if (map->data[index] != NULL) {		
@@ -273,14 +266,14 @@ event_info *get_el_value_hash_map_by_idx_fd(hash_map *map, ssize_t index, int fd
 		exit(1);
 	}
 		
-	Entry *ret_val = NULL;
+	Entry *ret_val = NULL;	
 	
 	if (map->data[index] != NULL) {
 		if (map->data[index]->value->fd == fd){
 			return map->data[index]->value;
 			
 		} else {
-			Entry *anchor = map->data[index]->next;
+			Entry *anchor = map->data[index]->next;		
 			
 			while (anchor) {
 				if (anchor->value->fd == fd) {
@@ -292,9 +285,10 @@ event_info *get_el_value_hash_map_by_idx_fd(hash_map *map, ssize_t index, int fd
 			}
 		}
 	}
-	if (NULL != ret_val)	
+	if (NULL != ret_val){
 		return ret_val->value;
-		
+	}
+	
 	return NULL;
 }
 

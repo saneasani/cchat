@@ -50,10 +50,10 @@ static const server_system_msg all_msgs[] = {
 	{"[server]: Request to provide shell browsing from username: %s.\n", 63},							// 26
 	{"[server]: Shell browsing started with username: %s.\n", 52},										// 27
 	{"[server]: Shell browsing started from username: %s.\n", 52},										// 28
-	{"[server]: No such shell request or time for waiting 10s has elapsed.\n", 74},						// 29
+	{"[server]: No such shell request or time for waiting 10s has elapsed.\n", 69},						// 29
 	{"[server]: Incoming username: %s canceled the shell managing.\n", 61},								// 30
 	{"[server]: Outcoming username: %s canceled the shell managing.\n", 62},							// 31
-	{"[server]: You can use only one outcoming or incoming shell managing.\n", 70},					    // 32
+	{"[server]: You can use only one outcoming or incoming shell managing.\n", 69},					    // 32
 	{"[server]: No such shell request.\n", 33},															// 33
 
 			

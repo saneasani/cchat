@@ -15,6 +15,23 @@
 #define CHUNK_SIZE 1030
 #define NODE_QUANTITY 100
 
+struct message{
+	uint8_t msg_type;
+	uint8_t notif;
+	uint16_t len;
+	char buf[MAX_LINE];
+};
+
+
+struct message_numbers{
+	uint8_t msg_type;
+	uint8_t notif;
+	int16_t reserved;
+	uint32_t num_data;
+};
+
+
+ 
 
 
 
@@ -26,15 +43,27 @@ typedef struct event_info_{
 	int global;
 
 	int fl_notif_rcv;
+	int fl_tag_rcv;
 	int notif_rcv;
 	uint8_t type_msg;	
 	int start_msg;
 	int flag_len_msg;
 	
+	
+	char len_tag_num_arr[2];
+	uint16_t tag_num;
+	
 	char msg_chat_buf[MAX_LINE];
 	char len_chat_msg_arr[2];
 	uint16_t len_chat_msg;
 	size_t msg_chat_idx;
+	
+	
+	
+
+	int read;
+	int write;
+	int fl_eag_lock;
 	
 	
 	// --- private ---
@@ -47,7 +76,6 @@ typedef struct event_info_{
 	int init_src_shell;
 	
 	struct event_info_ *shell;
-	
 
 	// --- file ---
 	int fl_file_src_init;
@@ -58,8 +86,8 @@ typedef struct event_info_{
 	int fl_file_chunks;
 	int file_wr_fd;
 	int file_read_fd;
+	int event_file_fd;
 
-	
 
 	int file_read_send_fd;
 	off_t file_offset;
@@ -79,12 +107,21 @@ typedef struct event_info_{
 	size_t name_file_size;
 	size_t file_size;
 	size_t left_file_size;
-	size_t offset_file;
 	size_t rem_file;
 	char file_chunk[CHUNK_SIZE];
 
 	struct event_info_ *file;
 	
+	// --- output msg ---
+	struct message msg_std;
+	struct message_numbers msg_num;
+	char *ptr;
+	ssize_t total_len;
+	ssize_t cur_len;
+	ssize_t n_left;
+	ssize_t n_written;
+	ssize_t status_msg;
+
 	
 	// --- timer ---
 	struct itimerspec ts;

@@ -34,10 +34,6 @@ void clear_name(char *name, size_t sz){
 		fprintf(stderr, "[system]: clear_name, name is NULL.\n");
 		exit(1);
 	}
-	if (sz < 0){
-		fprintf(stderr, "[system]: clear_name, sz < 0.\n");
-		exit(1);
-	}
  
    char *ptr = name, *base = name;
    size_t idx_found = 0;
@@ -52,7 +48,7 @@ void clear_name(char *name, size_t sz){
 	   ptr = name + idx_found + 1;
 	   size_t limit = sz - idx_found;
 	   
-	   for (int i = 0; i < sz; i++) {
+	   for (size_t i = 0; i < sz; i++) {
 	       if (i < limit){
 			  *base = *ptr;    
 	       } else {
@@ -79,10 +75,10 @@ int parse_name(char buf[], size_t len){
 	size_t last_idx = len;
 	size_t pre_last_idx = len-1; 
 
-	for (int i = 0; i < len && buf[i]; i++){
-		if (!(buf[i] >= 48 && buf[i] <= 57 ||
-			  buf[i] >= 65 && buf[i] <= 90 ||
-			  buf[i] >= 97 && buf[i] <= 122)
+	for (size_t i = 0; i < len && buf[i]; i++){
+		if (!((buf[i] >= 48 && buf[i] <= 57) ||
+			  (buf[i] >= 65 && buf[i] <= 90) ||
+			  (buf[i] >= 97 && buf[i] <= 122))
 			){
 			if (i == last_idx && buf[i] == '\0') continue;
 			else if (i == pre_last_idx && buf[i] == '\n') 
@@ -94,11 +90,6 @@ int parse_name(char buf[], size_t len){
 }
 
 size_t get_size_num(size_t num){
-	if (num < 0){
-		fprintf(stderr, "[system]: get_size_num, num < 0.\n");
-		exit(1);
-	}
-	
     size_t count = 1;
     
     while(num/10){

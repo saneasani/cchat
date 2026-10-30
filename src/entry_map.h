@@ -1,6 +1,7 @@
 #ifndef H_ENTRYMAP
 #define H_ENTRYMAP
 
+
 #include "events.h"
 #include <stdio.h>
 #include <stddef.h>
@@ -33,7 +34,7 @@ typedef struct hash_map {
 } hash_map ;
 
 
-ssize_t hashcode(unsigned char *s);
+ssize_t hashcode(char *s);
 hash_map* create_hash_map(size_t limit, float loadFactor, float multiplier);
 hash_map* rehash_up(hash_map **_map_, Entry* e);
 int raw_put(hash_map **_map_, Entry *e);

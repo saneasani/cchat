@@ -13,11 +13,7 @@
 
 char *get_info_server_system_msg(size_t idx, size_t *len){
 	if (idx > limit_msgs){
-		fprintf(stderr, "[system] get_info_server_system_msg, idx(%ld) > limit(%ld).\n", idx, len);
-		exit(1);
-	}
-	if (idx < 0){
-		fprintf(stderr, "[system] get_info_server_system_msg, idx(%ld) < 0.\n", idx, len);
+		fprintf(stderr, "[system] get_info_server_system_msg, idx(%ld) > limit(%ld).\n", idx, *len);
 		exit(1);
 	}
 		
@@ -40,9 +36,6 @@ char *get_server_system_msg(size_t idx, char *name, size_t ln, int num, size_t *
 	
 	tmp_ptr = get_info_server_system_msg(idx, &len);
 	
-	printf("tmp_ptr=>:%s\n", tmp_ptr);
-	
-	// sstm_msg = get_server_system_msg(6, cur_event_info->msg_chat_buf, cur_event_info->msg_chat_idx, -1, &sstm_msg_len);
 
     if (num >= 0 && NULL == name){  
         len += ln;

@@ -111,7 +111,10 @@ event_info *push_node(control_nodes *cn, int fd, control_blocks **cb){
 	new_node->len_chat_msg = 0;
 	for (int i = 0; i < 2; i++)
 		new_node->len_chat_msg_arr[i] = '\0';
-		
+	
+	new_node->read = 0;	
+	new_node->write = 0;
+	new_node->fl_eag_lock = 0;
 	
 	// --- private ---
 	new_node->private = NULL;
@@ -135,9 +138,8 @@ event_info *push_node(control_nodes *cn, int fd, control_blocks **cb){
 	new_node->msg_num_idx = 0;
 	new_node->file_wr_fd = -1;
 	new_node->file_read_fd = -1;
+	new_node->event_file_fd = -1;
 
-	
-	
 	new_node->reserved = 0;
 	new_node->flag_reserved_msg = 0;
 	for (int i = 0; i < 2; i++)
@@ -147,9 +149,18 @@ event_info *push_node(control_nodes *cn, int fd, control_blocks **cb){
 	new_node->name_file_size = 0;
 	new_node->file_size = 0;
 	new_node->left_file_size = 0;
-	new_node->offset_file = 0;
 	new_node->rem_file = 0;
 	for (int i = 0; i < MAX_LINE; new_node->file_chunk[i++] = '\0');
+
+	// --- output msg ---
+	new_node->msg_std = (struct message){0};
+	new_node->msg_num = (struct message_numbers){0};
+	new_node->ptr = NULL;
+	new_node->total_len = 0;
+	new_node->cur_len = 0;
+	new_node->n_left = 0;
+	new_node->n_written = 0;
+	new_node->status_msg = 0;
 	
 	// --- timer ---
 	//new_node->ts = {0};
@@ -197,7 +208,11 @@ void return_node(control_nodes *cn, event_info *node){
 	node->len_chat_msg = 0;
 	for (int i = 0; i < 2; i++)
 		node->len_chat_msg_arr[i] = '\0';
-		
+
+	
+	node->read = 1;	
+	node->write = 0;		
+	node->fl_eag_lock = 0;		
 	
 	// --- private ---
 	node->private = NULL;
@@ -206,7 +221,6 @@ void return_node(control_nodes *cn, event_info *node){
 	// --- shell ---
 	node->init_src_shell = 0;
 	node->init_dst_shell = 0;
-	
 	node->shell = NULL;
 	
 	// --- file ---
@@ -221,7 +235,7 @@ void return_node(control_nodes *cn, event_info *node){
 	node->msg_num_idx = 0;
 	node->file_wr_fd = -1;
 	node->file_read_fd = -1;
-	
+	node->event_file_fd = 0;
 	
 	node->reserved = 0;
 	node->flag_reserved_msg = 0;
@@ -232,9 +246,20 @@ void return_node(control_nodes *cn, event_info *node){
 	node->name_file_size = 0;
 	node->file_size = 0;
 	node->left_file_size = 0;
-	node->offset_file = 0;
 	node->rem_file = 0;
 	for (int i = 0; i < MAX_LINE; node->file_chunk[i++] = '\0');
+	
+	
+	// --- output msg ---
+	node->msg_std = (struct message){0};
+	node->msg_num = (struct message_numbers){0};
+	node->ptr = NULL;
+	node->total_len = 0;
+	node->cur_len = 0;
+	node->n_left = 0;
+	node->n_written = 0;
+	node->status_msg = 0;
+	
 	
 	// --- timer ---
 	for (int i = 0; i < 2; i++)
@@ -302,8 +327,7 @@ void clear_blocks(control_blocks **cb_head){
 	
 	control_blocks *itr_bl = *cb_head;
 	control_blocks *prev_bl = NULL;
-	
-	int count = 1;
+
 
 	while(itr_bl){
 		prev_bl = itr_bl;
@@ -334,7 +358,7 @@ int add_event(int epoll_fd, int fd, control_nodes *cn, control_blocks **cb, int 
 		fprintf(stderr, "[system]: add_event, fd < 0.\n");
 		return -1;
 	}
-	if (action < 0 || action > 1){
+	if (action < 0 || action > 3){
 		fprintf(stderr, "[system]: add_event, unsupported action.\n");
 		return -1;
 	}
@@ -344,7 +368,10 @@ int add_event(int epoll_fd, int fd, control_nodes *cn, control_blocks **cb, int 
 		ev.events = EPOLLIN;
 	else if (1 == action)
 		ev.events = EPOLLIN | EPOLLET;
-
+	else if (2 == action)
+		ev.events = EPOLLIN | EPOLLET | EPOLLOUT;
+ 
+ 
 	ev.data.ptr = push_node(cn, fd, cb);
 	if (NULL == ev.data.ptr){
 		fprintf(stderr, "[system]: add_event, event node is NULL.\n");
